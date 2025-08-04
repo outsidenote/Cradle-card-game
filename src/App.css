@@ -1,0 +1,381 @@
+body {
+  margin: 0;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  background-color: #fdf6e3; /* A lighter, parchment-like background */
+}
+
+.game-board {
+  background-color: #8b4513; /* A rich, wood-table color */
+  min-height: 100vh;
+  padding: 20px;
+  color: #fdf6e3;
+  box-shadow: inset 0 0 15px 5px rgba(0,0,0,0.5);
+}
+
+.game-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+}
+
+h1, h2, h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+hr {
+  border: 0;
+  height: 2px;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(253, 246, 227, 0.75), rgba(0, 0, 0, 0));
+  margin: 2rem 0;
+}
+
+.table-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap; /* Allow decks area to wrap on very small screens */
+}
+
+.purchase-area {
+  flex-grow: 1;
+}
+
+.decks-area {
+  display: flex;
+  gap: 2rem;
+  padding-right: 2rem;
+}
+
+.deck-pile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.card-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+/* --- MODIFICATION STARTS HERE --- */
+
+.players-section {
+  display: flex; /* 1. Turn the container into a flexbox */
+  flex-wrap: wrap; /* 2. Allow items to wrap to the next line */
+  justify-content: center; /* 3. Center the items */
+  gap: 2rem; /* 4. Add space between the player areas */
+}
+
+.player-area {
+  flex: 1; /* 5. Allow each player area to grow and fill space */
+  min-width: 450px; /* 6. THE KEY: Don't let it get smaller than this. If it can't fit, it will wrap. */
+  padding: 1rem;
+  border: 3px solid transparent;
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* --- MODIFICATION ENDS HERE --- */
+
+
+.player-area.active-player {
+  border-color: #fdf6e3;
+  box-shadow: 0 0 15px #fdf6e3;
+}
+
+/* --- Card Styling --- */
+.card {
+  background-color: white;
+  border: 1px solid #333;
+  border-radius: 8px;
+  width: 100px;
+  height: 140px;
+  padding: 5px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-weight: bold;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-5px) scale(1.02);
+}
+
+.card.card-back {
+  background-color: #654321;
+  background-image:
+    radial-gradient(circle, #8b4513 20%, transparent 20%),
+    radial-gradient(circle, #8b4513 20%, transparent 20%);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+}
+
+.card-placeholder {
+  width: 100px;
+  height: 140px;
+  border: 2px dashed rgba(253, 246, 227, 0.5);
+  border-radius: 8px;
+}
+
+.card-rank-suit {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.card-rank-suit.top { text-align: left; }
+.card-rank-suit.bottom { text-align: right; transform: rotate(180deg); }
+.card-suit-big { font-size: 3rem; text-align: center; line-height: 1; }
+
+/* Add these new rules for card interaction */
+.card.selectable:hover {
+  transform: translateY(-5px) scale(1.05);
+}
+
+.card.selected {
+  outline: 4px solid #ffd700; /* A gold outline for selected cards */
+  outline-offset: -4px;
+  transform: translateY(-8px) scale(1.05);
+  box-shadow: 0 0 15px 5px #ffd700;
+}
+
+
+/* --- PREVIOUS CSS (Keep all of this) --- */
+.player-header { /* ... */ }
+.action-button { /* ... */ }
+.action-button:hover:not(:disabled) { /* ... */ }
+.action-button:disabled { /* ... */ }
+body { /* ... */ }
+.game-board { /* ... */ }
+.game-header { /* ... */ }
+/* ... (and so on for all the other existing styles) ... */
+
+/* Add this new rule for the game phase text */
+.game-phase-indicator {
+  color: #00bfff; /* Deep Sky Blue */
+  text-shadow: 1px 1px 2px black;
+  animation: pulse-text 2s infinite;
+}
+
+/* Add this new rule for the bonus card highlight */
+.card.bonus-target {
+  outline: 4px solid #00bfff;
+  box-shadow: 0 0 15px 5px #00bfff;
+  cursor: pointer;
+  animation: pulse-border 1.5s infinite;
+}
+
+/* Add these new keyframes for the animations */
+@keyframes pulse-text {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 15px 5px #00bfff; }
+  50% { box-shadow: 0 0 25px 10px #00bfff; }
+  100% { box-shadow: 0 0 15px 5px #00bfff; }
+}
+
+/* --- PREVIOUS CSS (Keep all of this) --- */
+.card.selected { /* ... */ }
+.player-header { /* ... */ }
+/* ... (and so on for all the other existing styles) ... */
+
+/* --- ADD THESE NEW STYLES FOR THE MENU --- */
+.game-menu {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 100; /* Ensure it's on top of other elements */
+}
+
+.menu-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fdf6e3;
+  background-color: transparent;
+  border: 2px solid #fdf6e3;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.menu-button:hover {
+  background-color: rgba(253, 246, 227, 0.2);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 5px;
+  background-color: #fdf6e3;
+  border: 1px solid #333;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  padding: 5px;
+  min-width: 150px;
+}
+
+.dropdown-menu button {
+  width: 100%;
+  padding: 10px;
+  background-color: transparent;
+  border: none;
+  color: #333;
+  text-align: left;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+  background-color: #eee8d5;
+}
+
+
+/* --- PREVIOUS CSS (Keep all of this) --- */
+body { /* ... */ }
+.game-board { /* ... */ }
+/* ... (and so on) ... */
+
+/* ADD THIS CSS TO YOUR APP.CSS FILE */
+
+.player-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.phase-and-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* Space between phase text and buttons */
+}
+
+.phase-text {
+  margin: 0;
+  color: #ffc107; /* A gold/yellow color to stand out */
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem; /* Space between buttons like Attack and Skip */
+}
+
+/* Red highlight for selected attacking cards */
+.card.selected.attack-selectable {
+  box-shadow: 0 0 15px 5px rgba(255, 0, 0, 0.8);
+  border-color: #ff4d4d;
+}
+
+/* ADD THESE STYLES TO YOUR APP.CSS FILE */
+
+/* Replace .card-row with this new container for the columns */
+.village-columns {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 250px; /* Give space for the stacks to grow */
+  padding-top: 1.5rem; /* Space for the suit headers */
+}
+
+.suit-column {
+  position: relative; /* This is crucial for positioning the cards inside */
+  width: 120px; /* Width of a card */
+}
+
+/* Optional headers for each suit column */
+.suit-column h4 {
+  position: absolute;
+  top: -1.5rem; /* Position header above the stack */
+  left: 0;
+  right: 0;
+  margin: 0;
+  font-size: 0.8em;
+  text-align: center;
+  color: #aaa;
+}
+
+.card-stack {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+/* This wrapper controls the position of each card in the stack */
+.stacked-card-wrapper {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+/* ADD THIS CSS TO YOUR APP.CSS FILE */
+
+/* Styles for the custom dialog box */
+.game-dialog {
+  min-width: 400px;
+  max-width: 500px;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #444;
+  background-color: #2c2c2c;
+  color: white;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.game-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(3px);
+}
+
+.dialog-title {
+  margin: 0 0 1rem;
+  font-size: 1.5em;
+  color: #61dafb; /* React blue for titles */
+}
+
+.dialog-message {
+  margin-bottom: 1.5rem;
+  white-space: pre-wrap; /* Respects newlines in the message string */
+  line-height: 1.5;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+/* Secondary button style for "Cancel" */
+.action-button.secondary {
+  background-color: #555;
+  color: #eee;
+}
+
+.action-button.secondary:hover {
+  background-color: #777;
+}
+
+/* ADD THIS CSS TO YOUR APP.CSS FILE */
+
+.purchase-bonus-text {
+  color: #48bb78; /* A nice green color */
+  font-weight: bold;
+  font-size: 0.9em;
+  text-shadow: 0 0 5px rgba(72, 187, 120, 0.7); /* Green glow effect */
+  margin-left: 1rem;
+}
