@@ -4,7 +4,6 @@ import './App.css';
 // --- Helper Functions and Constants ---
 
 const getRankValue = (card) => {
-  // Guard against null card object
   if (!card) return 0;
   const rank = card.rank;
   if (['J', 'Q', 'K'].includes(rank)) return 10;
@@ -406,12 +405,10 @@ function App() {
     }
   }, [gameState, isLoading, gamePhase]);
 
-  // --- FIXED: Guard added to prevent crash when purchaseBonus is null ---
   useEffect(() => {
     if (isLoading || !gameState || gamePhase !== 'purchase') return;
     const currentPlayer = gameState.players[gameState.currentPlayerIndex];
     const faceUpCards = currentPlayer.village.filter(card => card.isFaceUp);
-
     const bonusValue = purchaseBonus ? getRankValue(purchaseBonus) : 0;
     const maxPayment = faceUpCards.reduce((sum, card) => sum + getRankValue(card), 0) + bonusValue;
     
@@ -423,7 +420,6 @@ function App() {
       performRestAndEndTurn();
     }
   }, [gameState, isLoading, gamePhase, wasAttackAutoSkipped, purchaseBonus, performRestAndEndTurn]);
-
 
   if (isLoading || !gameState) {
     return <div className="game-board"><h1>Setting up the Cradle...</h1></div>;
@@ -473,11 +469,18 @@ function App() {
           }
 
           const sortedSuits = Object.keys(groupedBySuit).sort((a, b) => SUIT_ORDER[a] - SUIT_ORDER[b]);
+          
+          // --- NEW: Calculate the player's score ---
+          const playerScore = player.village.reduce((sum, card) => sum + getRankValue(card), 0);
 
           return (
             <div key={player.id} className={`player-area ${isMyTurn ? 'active-player' : ''}`}>
               <div className="player-header">
-                <h2>{player.name}'s Village</h2>
+                {/* --- MODIFIED: Grouped name and score --- */}
+                <div className="player-info">
+                  <h2>{player.name}'s Village</h2>
+                  <h3 className="player-score">Score: {playerScore}</h3>
+                </div>
                 <div className="phase-and-actions">
                   {isMyTurn && gamePhase === 'attack' && (
                     <>
@@ -514,7 +517,6 @@ function App() {
                       {groupedBySuit[suit].map((card, cardIndex) => {
                         let canClick = false, clickHandler = undefined, customClass = '';
                         
-                        // --- FIXED: Corrected click handling logic ---
                         if (isMyTurn) {
                             if (gamePhase === 'attack' && card.isFaceUp && card.suit === 'Spades') {
                                 canClick = true;
@@ -528,7 +530,7 @@ function App() {
                                 canClick = true;
                                 clickHandler = () => handleHeartBonus(card.id);
                             }
-                        } else { // It's the opponent's board
+                        } else {
                             if (gamePhase === 'weaken_opponent' && bonusOptions.cardIds.includes(card.id)) {
                                 canClick = true;
                                 clickHandler = () => handleWeakenOpponentCard(card.id, player.id);
