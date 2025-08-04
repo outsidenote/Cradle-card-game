@@ -379,3 +379,16 @@ body { /* ... */ }
   text-shadow: 0 0 5px rgba(72, 187, 120, 0.7); /* Green glow effect */
   margin-left: 1rem;
 }
+
+/* ADD THIS CSS TO YOUR APP.CSS FILE */
+
+.player-info {
+  text-align: left; /* Aligns the name and score to the left */
+}
+
+.player-score {
+  margin: 0;
+  font-size: 0.9em;
+  font-weight: normal;
+  color: #ccc; /* A lighter grey to be less prominent than the name */
+}
